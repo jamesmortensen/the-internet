@@ -30,6 +30,21 @@ class Public < Sinatra::Base
   enable :sessions, :logging
   register Sinatra::Flash
 
+  before do
+    @note = 'Hi!'
+    if request.path_info != '/' && request.path_info != '/login' && request.path_info != '/authenticate' && request.path_info != '/logout'
+      session[:redirect_path] = request.path_info
+      unless session[:username]
+        flash[:error] = 'You must login to view the secure area!'
+        redirect '/login'
+      end
+    else 
+      if request.path_info == '/logout'
+        session[:redirect_path] = '/secure'
+      end
+    end
+  end
+
   get '/' do
     erb :index
   end
@@ -253,7 +268,11 @@ class Public < Sinatra::Base
       if password == params[:password]
         session[:username] = params[:username]
         flash[:success] = 'You logged into a secure area!'
-        redirect '/secure'
+        if session[:redirect_path]
+          redirect session[:redirect_path]
+        else 
+          redirect '/secure'
+        end
       else
         flash[:error] = 'Your password is invalid!'
       end
@@ -470,6 +489,12 @@ class Public < Sinatra::Base
                   <ul>}]
     @payload = markup[rand(2)]
     erb :disappear
+  end
+
+  get '/gallery' do
+    @copy = ["Welcome to the gallery."]
+
+    erb :gallery_images
   end
 
   get '/typos' do
