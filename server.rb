@@ -32,6 +32,21 @@ class Public < Sinatra::Base
 
   before do
     @note = 'Hi!'
+    # Trying to figure out how to make the login redirect not redirect images
+    # It works locally, but has trouble in e2e tests.
+    passthrough = false;
+    case 
+      when request.path_info.match(/.*.ico/)
+        puts "ico image"
+      
+      when request.path_info.match(/.*[jpg|png|gif]/)
+        puts "jpg or png"
+
+      when request.path_info.match(/[\/,\/login,\/authenticate]/)
+        puts "home, login, auth"
+      
+    end
+
     if request.path_info != '/' && request.path_info != '/login' && request.path_info != '/authenticate' && request.path_info != '/logout'
       session[:redirect_path] = request.path_info
       unless session[:username]
@@ -489,12 +504,6 @@ class Public < Sinatra::Base
                   <ul>}]
     @payload = markup[rand(2)]
     erb :disappear
-  end
-
-  get '/gallery' do
-    @copy = ["Welcome to the gallery."]
-
-    erb :gallery_images
   end
 
   get '/typos' do
