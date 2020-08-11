@@ -472,6 +472,10 @@ class Public < Sinatra::Base
     erb :disappear
   end
 
+  get '/gallery' do
+    erb :gallery_images
+  end
+
   get '/typos' do
     @copy = ["Sometimes you'll see a typo, other times you won't.",
              "Sometimes you'll see a typo, other times you won,t."].at(rand(2))
