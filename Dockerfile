@@ -6,5 +6,7 @@ WORKDIR /app
 RUN bundle install
 ADD . /app
 
-EXPOSE 5000
-CMD ["bundle", "exec", "rackup", "--host", "0.0.0.0", "-p", "5000"]
+#EXPOSE 5000
+#CMD echo $PORT
+CMD bundle exec rackup --host 0.0.0.0 -p $PORT
+#CMD ["bundle", "exec", "rackup", "--host", "0.0.0.0", "-p", $PORT]
